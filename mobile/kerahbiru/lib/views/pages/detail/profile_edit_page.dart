@@ -436,7 +436,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ? FileImage(_image!)
                       : currentPhotoUrl != null
                           ? NetworkImage(
-                              'http://10.215.47.243:8000/storage/$currentPhotoUrl')
+                              'http://192.168.18.37:8000/storage/$currentPhotoUrl')
                           : const AssetImage("assets/images/user.jpg")
                               as ImageProvider,
                 ),

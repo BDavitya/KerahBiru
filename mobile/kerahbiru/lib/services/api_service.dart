@@ -183,6 +183,7 @@ class ApiService {
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['user_id'] = userId.toString();
+      print("📤 Sending request: fields = ${request.fields}");
 
       if (name != null) request.fields['name'] = name;
       if (phone != null) request.fields['phone'] = phone;
@@ -360,6 +361,7 @@ class ApiService {
           'Authorization': 'Bearer $token',
         },
       );
+
       print('📤 Orders Response: ${response.body}');
       return jsonDecode(response.body);
     } catch (e) {

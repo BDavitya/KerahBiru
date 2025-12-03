@@ -21,47 +21,11 @@ class UserController extends Controller
                 ], 404);
             }
 
-            return response()->json([
-                'success' => true,
-                'user' => $user,
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function updateProfile(Request $request)
-    {
-        try {
-            $userId = $request->input('user_id');
-            $user = User::find($userId);
-
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User not found',
-                ], 404);
-            }
-
-            if ($request->has('name')) $user->name = $request->name;
-            if ($request->has('phone')) $user->phone = $request->phone;
-            if ($request->has('address')) $user->address = $request->address;
-            if ($request->has('latitude')) $user->latitude = $request->latitude;
-            if ($request->has('longitude')) $user->longitude = $request->longitude;
-
-            if ($request->hasFile('photo')) {
-                if ($user->photo) {
-                    Storage::disk('public')->delete($user->photo);
-                }
-                $path = $request->file('photo')->store('users', 'public');
-                $user->photo = $path;
-            }
-
             $user->save();
+
+            $user->photo_url = $user->photo 
+                ? asset('storage/' . $user->photo)
+                : null;
 
             return response()->json([
                 'success' => true,
@@ -76,6 +40,49 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+public function updateProfile(Request $request)
+{
+    try {
+        $userId = $request->get('user_id');
+            $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        if ($request->has('name')) $user->name = $request->name;
+        if ($request->has('phone')) $user->phone = $request->phone;
+        if ($request->has('address')) $user->address = $request->address;
+        if ($request->has('latitude')) $user->latitude = $request->latitude;
+        if ($request->has('longitude')) $user->longitude = $request->longitude;
+
+        if ($request->hasFile('photo')) {
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $path = $request->file('photo')->store('users', 'public');
+            $user->photo = $path;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil Berhasil Diperbarui!',
+            'user' => $user,
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage(),
+        ], 500);
+    }
+}
 
     public function updatePreferences(Request $request)
     {

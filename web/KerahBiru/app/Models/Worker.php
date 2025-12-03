@@ -34,15 +34,41 @@ class Worker extends Model
         'is_available' => 'boolean',
         'total_orders' => 'integer',
     ];
+protected $appends = ['calculated_rating', 'completed_jobs', 'latest_review'];
+
+public function orders()
+{
+    return $this->hasMany(Order::class);
+}
+
+public function getCalculatedRatingAttribute()
+{
+    $avg = $this->orders()
+        ->whereNotNull('user_rating')
+        ->avg('user_rating');
+
+    return $avg ? round($avg, 2) : 0;
+}
+
+public function getCompletedJobsAttribute()
+{
+    return $this->orders()
+        ->where('status', 'completed')
+        ->count();
+}
+
+public function getLatestReviewAttribute()
+{
+    return $this->orders()
+        ->whereNotNull('user_review')
+        ->orderBy('updated_at', 'desc')
+        ->value('user_review');
+}
+
 
     public function schedules()
     {
         return $this->hasMany(WorkerSchedule::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
     }
 
     public function scopeApproved($query)

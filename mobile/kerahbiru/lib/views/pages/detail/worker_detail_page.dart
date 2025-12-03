@@ -47,7 +47,7 @@ class _WorkerDetailPageState extends State<WorkerDetailPage> {
       await _checkFavorite();
     }
 
-    await _loadReviews();
+    await _loadWorkerDetail();
   }
 
   Future<void> _loadUserId() async {
@@ -93,6 +93,27 @@ class _WorkerDetailPageState extends State<WorkerDetailPage> {
       if (mounted) {
         setState(() => isLoadingFavorite = false);
       }
+    }
+  }
+
+  Future<void> _loadWorkerDetail() async {
+    try {
+      final response = await ApiService.getWorkerDetail(widget.worker['id']);
+
+      if (response['success'] == true) {
+        final worker = response['worker'];
+
+        setState(() {
+          calculatedRating =
+              double.tryParse(worker['calculated_rating'].toString()) ?? 0.0;
+
+          totalReviews = response['total_reviews'] ?? 0;
+
+          reviews = List<Map<String, dynamic>>.from(response['reviews'] ?? []);
+        });
+      }
+    } catch (e) {
+      debugPrint('❌ Error load worker detail: $e');
     }
   }
 
@@ -147,16 +168,8 @@ class _WorkerDetailPageState extends State<WorkerDetailPage> {
 
   String _censorName(String? fullName) {
     if (fullName == null || fullName.isEmpty) return 'P***';
-
-    final parts = fullName.trim().split(' ');
-    if (parts.length == 1) {
-      return '${parts[0][0].toUpperCase()}***';
-    } else {
-      return parts.map((part) {
-        if (part.isEmpty) return '';
-        return '${part[0].toUpperCase()}***';
-      }).join(' ');
-    }
+    final name = fullName.split(' ').first;
+    return '${name[0].toUpperCase()}***';
   }
 
   Future<void> _loadReviews() async {

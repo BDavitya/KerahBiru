@@ -42,10 +42,11 @@ class WorkerController extends Controller
         $workers = $query->get();
 
         $workers = $workers->map(function($worker) use ($user) {
-            // Calculate actual rating from orders
-            $avgRating = $worker->orders()->whereNotNull('user_rating')->avg('user_rating');
-            $worker->rating = $avgRating ? round($avgRating, 2) : 0;
-            
+            $workerArray = $worker->toArray();
+$workerArray['rating'] = $worker->calculated_rating;
+$workerArray['total_jobs'] = $worker->completed_jobs;
+$workerArray['review'] = $worker->latest_review;
+
             $distance = $this->calculateDistance(
                 $user->latitude ?? -7.7956,
                 $user->longitude ?? 110.3695,
@@ -70,7 +71,7 @@ class WorkerController extends Controller
                     $workers = $workers->sortBy('price_per_hour')->values();
                     break;
                 case 'Terpercaya':
-                    $workers = $workers->sortByDesc('rating')->values();
+                    $workers = $workers->sortByDesc('calculated_rating')->values();
                     break;
             }
         }
@@ -88,26 +89,36 @@ class WorkerController extends Controller
     }
 }
 
-    public function show($id)
-    {
-        try {
-            $worker = Worker::with('schedules')->where('approval_status', 'approved')->findOrFail($id);
-            
-            // Calculate actual rating
-            $avgRating = $worker->orders()->whereNotNull('user_rating')->avg('user_rating');
-            $worker->rating = $avgRating ? round($avgRating, 2) : 0;
+   public function show($id)
+{
+    $worker = Worker::with('schedules')->findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'worker' => $worker,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Worker not found',
-            ], 404);
-        }
-    }
+    // Hitung rating
+    $avgRating = $worker->orders()->whereNotNull('user_rating')->avg('user_rating');
+    $worker->calculated_rating = $avgRating ? round($avgRating, 2) : 0;
+
+    // Ambil semua review yang completed
+    $reviews = $worker->orders()
+    ->where('status', 'completed')
+    ->whereNotNull('user_rating')
+    ->with('user:id,name')
+    ->orderBy('work_completed_at', 'desc')
+    ->get();
+
+    // Tambahkan user name
+    $reviews->transform(function ($item) {
+        $item->user_name = $item->user->name ?? 'Pengguna';
+        return $item;
+    });
+
+    return response()->json([
+        'success' => true,
+        'worker' => $worker,
+        'reviews' => $reviews,
+        'total_reviews' => $reviews->count(),
+    ]);
+}
+
 
     public function getAvailableSchedules(Request $request, $workerId)
     {

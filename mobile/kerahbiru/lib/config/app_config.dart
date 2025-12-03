@@ -1,5 +1,5 @@
 class AppConfig {
-  static const String API_BASE_URL = "http://10.215.47.243:8000/api";
+  static const String API_BASE_URL = "http://192.168.18.37:8000/api";
   static const int SESSION_DURATION_MINUTES = 10;
   static int get sessionDurationSeconds => SESSION_DURATION_MINUTES * 60;
   static String get storageUrl => API_BASE_URL.replaceAll('/api', '/storage');

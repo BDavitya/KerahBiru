@@ -464,7 +464,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               background: worker != null && worker['photo'] != null
                   ? ClipRRect(
                       child: Image.network(
-                        'http://10.215.47.243:8000/storage/${worker["photo"]}',
+                        'http://192.168.18.37:8000/storage/${worker["photo"]}',
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
                           color: Colors.grey[300],
@@ -661,7 +661,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: Image.network(
-                                    'http://10.215.47.243:8000/storage/${order!["photo_before"]}',
+                                    'http://192.168.18.37:8000/storage/${order!["photo_before"]}',
                                     height: 150,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
@@ -696,7 +696,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: Image.network(
-                                    'http://10.215.47.243:8000/storage/${order!["photo_after"]}',
+                                    'http://192.168.18.37:8000/storage/${order!["photo_after"]}',
                                     height: 150,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
