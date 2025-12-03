@@ -1,0 +1,118 @@
+.glass-navbar {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 8px 25px;
+    margin: 10px auto;
+    width: 90%;
+}
+
+.glass-navbar a {
+    font-weight: 600;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+}
+
+.btn-navy {
+    background-color: #052c62;
+    color: #fff;
+    border: none;
+}
+
+.btn-navy:hover {
+    background-color: #0a2241;
+    color: #fff;
+}
+
+.nav-link:hover {
+    color: #0a2241 !important;
+}
+
+.nav-link.active {
+    border-bottom: #052c62 3px solid;
+    color: #052c62;
+    box-shadow: 0 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.divider-line {
+    position: absolute;
+    left: 41%;
+    top: 0;
+    width: 1.5px;
+    height: 100%;
+    background: #003b64;
+    opacity: 0.3;
+    border-radius: 2px;
+    transform: translateX(-50%);
+}
+
+.slider {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.slide-track {
+    display: flex;
+    width: calc(250px * 10);
+    animation: scroll 25s linear infinite;
+}
+
+.slide {
+    width: 250px;
+    flex-shrink: 0;
+    padding: 10px;
+}
+
+.slide img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 991px) {
+    .overlay-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1050;
+        flex-direction: column;
+        transition: left 0.3s ease;
+    }
+
+    .overlay-menu.show {
+        left: 0;
+    }
+
+    .overlay-menu .nav-link {
+        font-size: 1.5rem;
+    }
+}
